@@ -9,7 +9,7 @@ from dept;
 
 select 
     name || '(' || id || ')'  교수정보,
-    position
+    position,
     hiredate 입사일자,
     email 이메일
 from professor
