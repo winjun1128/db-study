@@ -48,8 +48,15 @@ where p.hiredate > (select hiredate
                     from professor
                     where name = 'Meg Ryan')
 AND p.deptno = d.deptno;
-
+/*******************************************/
 --3
+select name, weight
+from student
+where weight >(select AVG(weight)
+                from student
+               where deptno1 = 201);
+--3.
+--student 테이블, 1전공이 201번 학과의 평균 몸무게보다 몸무게가 많이 나가는 학생들의 이름과 몸무게 출력하세요.
 select name, weight
 from student
 where weight >(select AVG(weight)
@@ -61,23 +68,24 @@ from emp2
 where deptno IN (select dcode
                     from dept2
                     where SUBSTR(area,1,INSTR(area,' ')-1)='Pohang');
---1
-select name,position,pay
+4.
+--emp2, dept2 테이블을 참고하여,
+--근무지역이 포항인 모든 사원들의 사번, 이름, 부서번호 출력하기!!           
+select empno,name,deptno
 from emp2
-where pay > (select MIN(pay)
-             from emp2
-             where position = 'Section head');
---2
-select name,grade,weight
-from student
-where weight < (select MIN(weight)
-                from student
-                where grade = 2);
---3 X
-select d.dname,e.name,e.pay
-from emp2 e,dept2 d
-where e.pay < (select MIN(AVG(pay))
-            from emp2
-            group by deptno);
-             
+where deptno IN (select dcode
+                    from dept2
+                    where SUBSTR(area,1,INSTR(area,' ')-1)='Pohang');
+
+select empno, name, deptno
+from emp2 e, dept2 d
+where e.deptno = d.dcode
+AND d.area = 'Pohang Main Office';
+
+select empno,name,deptno 
+from emp2 e, (select dcode
+                from dept2
+                where area = 'Pohang Main Office')d
+where e.deptno = d.dcode;
+
 
