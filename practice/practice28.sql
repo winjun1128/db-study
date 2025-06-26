@@ -1,0 +1,117 @@
+CREATE TABLE TABLE_DATA_1
+(
+no number(10),
+create_date DATE
+);
+
+CREATE TABLE TABLE_DATA_2
+(
+no number(10),
+create_date DATE
+);
+
+CREATE TABLE TABLE_COLC
+(
+std_date DATE,
+CHECK_DATA1 VARCHAR2(6),
+CHECK_DATA2 VARCHAR2(6)
+);
+
+drop table table_colc;
+
+INSERT INTO TABLE_DATA_1 VALUES (1, '2023-04-01');
+INSERT INTO TABLE_DATA_1 VALUES (2, '2023-04-02');
+INSERT INTO TABLE_DATA_1 VALUES (3, '2023-04-03');
+INSERT INTO TABLE_DATA_1 VALUES (4, '2023-04-04');
+
+INSERT INTO TABLE_DATA_2 VALUES (1, '2023-04-02');
+INSERT INTO TABLE_DATA_2 VALUES (2, '2023-04-03');
+INSERT INTO TABLE_DATA_2 VALUES (3, '2023-04-04');
+INSERT INTO TABLE_DATA_2 VALUES (4, '2023-04-05');
+
+MERGE INTO TABLE_COLC c
+USING TABLE_DATA_1 d1
+ON (c.std_date = d1.create_date)
+WHEN MATCHED THEN
+    UPDATE SET c.check_data1 = 'Y'
+WHEN NOT MATCHED THEN
+    INSERT (std_date,check_data1)
+    VALUES (d1.create_date,'Y');
+
+MERGE INTO TABLE_COLC c
+USING TABLE_DATA_2 d2
+ON (c.std_date = d2.create_date)
+WHEN MATCHED THEN
+    UPDATE SET c.check_data2 = 'Y'
+WHEN NOT MATCHED THEN
+    INSERT (std_date,check_data2)
+    VALUES (d2.create_date,'Y');
+
+UPDATE TABLE_COLC
+SET check_data1='N'
+where check_data1 is null;
+    
+select * from TABLE_COLC;
+
+UPDATE TABLE_COLC
+SET check_data2='N'
+where check_data2 is null;
+    
+select * from TABLE_COLC;
+
+drop table TABLE_COLC;
+/*****************************************/
+CREATE TABLE TABLE_DATA_1
+(
+no number(10),
+create_date DATE
+);
+
+CREATE TABLE TABLE_DATA_2
+(
+no number(10),
+create_date DATE
+);
+
+CREATE TABLE TABLE_COLC
+(
+std_date DATE,
+CHECK_DATA1 VARCHAR2(6),
+CHECK_DATA2 VARCHAR2(6)
+);
+
+
+
+INSERT INTO TABLE_DATA_1 VALUES (1, '2023-04-01');
+INSERT INTO TABLE_DATA_1 VALUES (2, '2023-04-02');
+INSERT INTO TABLE_DATA_1 VALUES (3, '2023-04-03');
+INSERT INTO TABLE_DATA_1 VALUES (4, '2023-04-04');
+
+INSERT INTO TABLE_DATA_2 VALUES (1, '2023-04-02');
+INSERT INTO TABLE_DATA_2 VALUES (2, '2023-04-03');
+INSERT INTO TABLE_DATA_2 VALUES (3, '2023-04-04');
+INSERT INTO TABLE_DATA_2 VALUES (4, '2023-04-05');
+
+select * from TABLE_DATA_1;
+select * from TABLE_DATA_2;
+select * from TABLE_COLC
+order by std_date;
+
+--A업체데이터 처리 기준
+MERGE INTO TABLE_COLC C
+USING TABLE_DATA_1 T
+ON(C.std_date = T.create_date)
+WHEN MATCHED THEN --날짜가 있는 경우
+    UPDATE SET C.CHECK_DATA1 = 'Y' --'Y' / 'N'
+WHEN NOT MATCHED THEN --날짜가 없는 경우
+    INSERT VALUES (T.create_date,'Y','N');
+--B업체데이터 처리 기준
+MERGE INTO TABLE_COLC C
+USING TABLE_DATA_2 T
+ON(C.std_date = T.create_date)
+WHEN MATCHED THEN --날짜가 있는 경우
+    UPDATE SET C.CHECK_DATA2 = 'Y' --'Y' / 'N'
+WHEN NOT MATCHED THEN --날짜가 없는 경우
+    INSERT VALUES (T.create_date,'N','Y');
+
+select * from TABLE_COLC;
